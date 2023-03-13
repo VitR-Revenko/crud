@@ -1,3 +1,10 @@
+// let nameFormData = document.form.name.value;
+// let passwordFormData = document.form.password.value;
+// let emailFormData = document.form.email.value;
+// let ageFormData = document.form.age.value;
+// let telFormData = document.form.tel.value;
+// let cardFormData = document.form.card.value;
+
 function saveUsersToLocalStorage() {
   localStorage.setItem("users", JSON.stringify(users));
 }
@@ -24,8 +31,11 @@ function closeUserView() {
 function closeForm() {
   document.getElementById("addForm").classList.add("hidden");
   document.form.name.value = "";
-  document.form.lastName.value = "";
+  document.form.password.value = "";
   document.form.email.value = "";
+  document.form.age.value = "";
+  document.form.tel.value = "";
+  document.form.card.value = "";
   if (document.getElementById("saveBtn")) {
     removeElement("#saveBtn");
   } else if (document.getElementById("editBtn")) {
@@ -34,7 +44,12 @@ function closeForm() {
 }
 
 function saveValidate() {
-  if (!document.form.name.value || !document.form.lastName.value || !document.form.email.value) {
+  if (!nameRegExp.test(document.form.name.value) || 
+      !passwordRegExp.test(document.form.password.value) || 
+      !emailRegExp.test(document.form.email.value) || 
+      !ageRegExp.test(document.form.age.value) || 
+      !telRegExp.test(document.form.tel.value) || 
+      !cardRegExp.test(document.form.card.value)) {
     createElement(
       "div",
       "Error!!! Click here!!!",
@@ -62,10 +77,13 @@ function pushUser() {
   const userForPush = {
     id: Date.now(),
     name: document.form.name.value,
-    lastName: document.form.lastName.value,
+    password: document.form.password.value,
     email: document.form.email.value,
+    age: document.form.age.value,
+    tel: document.form.tel.value,
+    card: document.form.card.value,
   };
-
+  
   users.push(userForPush);
   saveUsersToLocalStorage();
 }
@@ -88,8 +106,11 @@ function viewUserHandler(user) {
   const parentSelector = "#userView";
   clearContent(parentSelector);
   createElement("div", `Name: ${user.name}`, null, null, parentSelector);
-  createElement("div", `Last name: ${user.lastName}`, null, null, parentSelector);
+  createElement("div", `Password: ${user.password}`, null, null, parentSelector);
   createElement("div", `Email: ${user.email}`, null, null, parentSelector);
+  createElement("div", `Age: ${user.age}`, null, null, parentSelector);
+  createElement("div", `Phone number: ${user.tel}`, null, null, parentSelector);
+  createElement("div", `Credit card: ${user.card}`, null, null, parentSelector);
 }
 
 function editUserHandler(user) {
@@ -97,7 +118,12 @@ function editUserHandler(user) {
   closeForm();
   closeUserView();
   function editUser() {
-    if (!document.form.name.value || !document.form.lastName.value || !document.form.email.value) {
+    if (!nameRegExp.test(document.form.name.value) || 
+    !passwordRegExp.test(document.form.password.value) || 
+    !emailRegExp.test(document.form.email.value) || 
+    !ageRegExp.test(document.form.age.value) || 
+    !telRegExp.test(document.form.tel.value) || 
+    !cardRegExp.test(document.form.card.value)) {
       createElement(
         "div",
         "Error!!! Click here!!!",
@@ -118,8 +144,11 @@ function editUserHandler(user) {
       }
     } else {
       currentUser.name = document.form.name.value;
-      currentUser.lastName = document.form.lastName.value;
+      currentUser.password = document.form.password.value;
       currentUser.email = document.form.email.value;
+      currentUser.age = document.form.age.value;
+      currentUser.tel = document.form.tel.value;
+      currentUser.card = document.form.card.value;
       saveUsersToLocalStorage();
     }
     clearContent("#usersList");
@@ -221,8 +250,8 @@ function showUserButtons(user, parentElement) {
 function showUsersList() {
   users.forEach(function (user) {
     const parentDiv = createElement("div", "", { "data-row-id": user.id }, null, "#usersList");
-    const fullName = `${user.name} ${user.lastName}`;
-    createElement("div", fullName, null, null, parentDiv);
+    const name = `${user.name}`;
+    createElement("div", name, null, null, parentDiv);
     showUserButtons(user, parentDiv);
   });
 }

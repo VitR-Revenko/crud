@@ -18,22 +18,36 @@
       <div id="addForm" class="hidden">
         <form class="form" name="form">
           <div class="inputBlock">
-            <label for="fn">First Name</label>
-            <input type="text" name="name" placeholder="First Name" id="fn" />
+            <label for="n">Full Name</label>
+            <input type="text" name="name" placeholder="Name Surname" id="n" />
           </div>
           <div class="inputBlock">
-            <label for="ln">Last Name</label>
-            <input type="text" name="lastName" placeholder="Last Name" id="ln" />
+            <label for="pw">Password (8)</label>
+            <input type="password" name="password" placeholder="Password" id="pw" />
           </div>
           <div class="inputBlock">
             <label for="em">Email</label>
             <input type="email" name="email" placeholder="example@email.com" id="em" />
           </div>
+          <div class="inputBlock">
+            <label for="age">Age</label>
+            <input type="number" name="age" id="age" />
+          </div>
+          <div class="inputBlock">
+            <label for="tel">Phone number (0112223344)</label>
+            <input type="number" name="tel" id="tel" />
+          </div>
+          <div class="inputBlock">
+            <label for="card">Credit card (16)</label>
+            <input type="number" name="card" id="card" />
+          </div>
         </form>
       </div>
     </div>
 
+    <script src="src/js/formAccess.js"></script>
     <script src="src/js/data/users.js"></script>
+    <script src="src/js/helpers/validation.js"></script>
     <script src="src/js/helpers/domHelpers.js"></script>
     <script src="src/js/app.js"></script>
   </body>
