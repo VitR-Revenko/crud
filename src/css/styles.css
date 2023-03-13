@@ -57,6 +57,12 @@
   gap: 10px;
 }
 
+.inputBlock {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
 .error {
   position: absolute;
   top: 50%;

@@ -29,18 +29,3 @@ function clearContent(selector) {
 function removeElement(selector) {
   document.querySelector(selector).remove();
 }
-
-
-/*
-
-handlers = {
-  click: {
-    callback: function() {},
-    isOnCapture: true | false
-  }
-  change: function() {},
-  ...
-}
-
-
-*/

@@ -1,4 +1,4 @@
-const users = [
+const users = JSON.parse(localStorage.getItem('users')) || [
   {
     id: 1,
     name: 'John',

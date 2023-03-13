@@ -1,44 +1,57 @@
+function saveUsersToLocalStorage() {
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
 function addNewUser() {
   document.getElementById("addBtn").addEventListener("click", () => {
     closeForm();
     closeUserView();
     document.getElementById("addForm").classList.remove("hidden");
-    document.getElementById("saveBtn").classList.remove("hidden");
+    createElement(
+      "input",
+      "",
+      { id: "saveBtn", type: "button", value: "Save" },
+      { click: { callback: saveUser } },
+      ".form"
+    );
   });
 }
 
-function openEditUser() {
-  closeUserView();
-  document.getElementById("addForm").classList.remove("hidden");
-  document.getElementById("editBtn").classList.remove("hidden");
-}
-
 function closeUserView() {
-  document.getElementById("userView").innerHTML = "";
+  clearContent("#userView");
 }
 
 function closeForm() {
   document.getElementById("addForm").classList.add("hidden");
-  document.getElementById("saveBtn").classList.add("hidden");
-  document.getElementById("editBtn").classList.add("hidden");
   document.form.name.value = "";
   document.form.lastName.value = "";
   document.form.email.value = "";
+  if (document.getElementById("saveBtn")) {
+    removeElement("#saveBtn");
+  } else if (document.getElementById("editBtn")) {
+    removeElement("#editBtn");
+  }
 }
 
 function saveValidate() {
   if (!document.form.name.value || !document.form.lastName.value || !document.form.email.value) {
-    const errorBlock = createElement(
+    createElement(
       "div",
-      "Error",
+      "Error!!! Click here!!!",
       { className: "error" },
       { click: { callback: returnToForm } },
       "body"
     );
     function returnToForm() {
-      errorBlock.classList.remove("error");
-      errorBlock.classList.add("hidden");
+      removeElement(".error");
       document.getElementById("addForm").classList.remove("hidden");
+      createElement(
+        "input",
+        "",
+        { id: "saveBtn", type: "button", value: "Save" },
+        { click: { callback: saveUser } },
+        ".form"
+      );
     }
   } else {
     pushUser();
@@ -46,54 +59,22 @@ function saveValidate() {
 }
 
 function pushUser() {
-  const tempObj = {};
-  tempObj.id = Date.now();
-  tempObj.name = document.form.name.value;
-  tempObj.lastName = document.form.lastName.value;
-  tempObj.email = document.form.email.value;
-  users.push(tempObj);
+  const userForPush = {
+    id: Date.now(),
+    name: document.form.name.value,
+    lastName: document.form.lastName.value,
+    email: document.form.email.value,
+  };
+
+  users.push(userForPush);
+  saveUsersToLocalStorage();
 }
 
 function saveUser() {
-  document.getElementById("saveBtn").addEventListener("click", () => {
-    closeUserView();
-    saveValidate();
-    document.getElementById("usersList").innerHTML = "";
-    showUsers();
-    closeForm();
-    localStorage.setItem('users', JSON.stringify(users));
-  });
-}
-
-function editValidate() {
-  if (!document.form.name.value || !document.form.lastName.value || !document.form.email.value) {
-    const errorBlock = createElement(
-      "div",
-      "Error",
-      { className: "error" },
-      { click: { callback: returnToForm } },
-      "body"
-    );
-    function returnToForm() {
-      errorBlock.classList.remove("error");
-      errorBlock.classList.add("hidden");
-      document.getElementById("addForm").classList.remove("hidden");
-    }
-  } else {
-    user.name = document.form.name.value;
-    user.lastName = document.form.lastName.value;
-    user.email = document.form.email.value;
-  }
-}
-
-function editUser() {
-  document.getElementById("editBtn").addEventListener("click", () => {
-    closeUserView();
-    editValidate();
-    document.getElementById("usersList").innerHTML = "";
-    showUsers();
-    closeForm();
-  });
+  saveValidate();
+  clearContent("#usersList");
+  showUsers();
+  closeForm();
 }
 
 function showUsersListHeader() {
@@ -112,22 +93,47 @@ function viewUserHandler(user) {
 }
 
 function editUserHandler(user) {
+  const currentUser = user;
   closeForm();
   closeUserView();
-  openEditUser();
-  document.form.name.value = user.name;
-  document.form.lastName.value = user.lastName;
-  document.form.email.value = user.email;
-  document.getElementById("editBtn").addEventListener("click", () => {
-    closeUserView();
-    user.name = document.form.name.value;
-    user.lastName = document.form.lastName.value;
-    user.email = document.form.email.value;
-    document.getElementById("usersList").innerHTML = "";
+  function editUser() {
+    if (!document.form.name.value || !document.form.lastName.value || !document.form.email.value) {
+      createElement(
+        "div",
+        "Error!!! Click here!!!",
+        { className: "error" },
+        { click: { callback: returnToForm } },
+        "body"
+      );
+      function returnToForm() {
+        removeElement(".error");
+        document.getElementById("addForm").classList.remove("hidden");
+        createElement(
+          "input",
+          "",
+          { id: "editBtn", type: "button", value: "Edit" },
+          { click: { callback: editUser } },
+          ".form"
+        );
+      }
+    } else {
+      currentUser.name = document.form.name.value;
+      currentUser.lastName = document.form.lastName.value;
+      currentUser.email = document.form.email.value;
+      saveUsersToLocalStorage();
+    }
+    clearContent("#usersList");
     showUsers();
     closeForm();
-    localStorage.setItem('users', JSON.stringify(users));
-  });
+  }
+  document.getElementById("addForm").classList.remove("hidden");
+  createElement(
+    "input",
+    "",
+    { id: "editBtn", type: "button", value: "Edit" },
+    { click: { callback: editUser } },
+    ".form"
+  );
 }
 
 function deleteUserHandler(id) {
@@ -150,9 +156,9 @@ function deleteUserHandler(id) {
       const index = users.findIndex((user) => user.id == id);
       users.splice(index, 1);
       removeElement(`div[data-row-id="${id}"`);
-      const localUsers = JSON.parse(localStorage.getItem('users'));
+      const localUsers = JSON.parse(localStorage.getItem("users"));
       localUsers.splice(index, 1);
-      localStorage.setItem('users', JSON.stringify(localUsers));
+      saveUsersToLocalStorage();
       modal.classList.remove("modal");
       modal.classList.add("hidden");
     } else if (buttonValue === "No") {
@@ -165,7 +171,7 @@ function deleteUserHandler(id) {
 function handleUserButtonsClick(event) {
   const action = event.target.getAttribute("name");
   const id = event.target.getAttribute("data-id");
-  const user = users.find((user) => user.id == id);
+  const user = users.find((user) => user.id === parseInt(id));
 
   if (action === "view") {
     viewUserHandler(user);
@@ -215,8 +221,8 @@ function showUserButtons(user, parentElement) {
 function showUsersList() {
   users.forEach(function (user) {
     const parentDiv = createElement("div", "", { "data-row-id": user.id }, null, "#usersList");
-    const fullname = `${user.name} ${user.lastName}`;
-    createElement("div", fullname, null, null, parentDiv);
+    const fullName = `${user.name} ${user.lastName}`;
+    createElement("div", fullName, null, null, parentDiv);
     showUserButtons(user, parentDiv);
   });
 }
@@ -229,8 +235,5 @@ function showUsers() {
 window.addEventListener("load", function () {
   showUsers();
   addNewUser();
-  saveUser();
-  localStorage.setItem('users', JSON.stringify(users));
+  saveUsersToLocalStorage();
 });
-
-
