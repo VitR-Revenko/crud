@@ -153,7 +153,7 @@ function deleteUserHandler(id) {
   function confirmDelete(event) {
     const buttonValue = event.target.getAttribute("value");
     if (buttonValue === "Yes") {
-      const index = users.findIndex((user) => user.id == id);
+      const index = users.findIndex((user) => user.id === parseInt(id));
       users.splice(index, 1);
       removeElement(`div[data-row-id="${id}"`);
       const localUsers = JSON.parse(localStorage.getItem("users"));
